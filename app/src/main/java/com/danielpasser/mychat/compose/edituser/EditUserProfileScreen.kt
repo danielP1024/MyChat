@@ -1,11 +1,13 @@
 package com.danielpasser.mychat.compose.edituser
 
 import android.widget.Toast
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -23,6 +25,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.danielpasser.mychat.compose.MyDatePicker
 import com.danielpasser.mychat.R
+import com.danielpasser.mychat.compose.BackButton
 import com.danielpasser.mychat.compose.HorizontalSpacer
 import com.danielpasser.mychat.compose.ImageLoader
 import com.danielpasser.mychat.models.networkmodels.response.errors
@@ -36,47 +39,8 @@ fun EditUserProfileScreen(
     navigateBack: () -> Unit
 ) {
     val context = LocalContext.current
-    //    LaunchedEffect(Unit) {
-//        viewModel.isLogin.collect { if (it) onLogin() }
-//    }
-    LaunchedEffect(Unit) {
-        viewModel.saveUserResponse.collect() {
-            when (it) {
-                is ApiResponse.Success -> {
-                    navigateBack()
-                    Toast.makeText(
-                        context,
-                        context.getText(R.string.user_saved).toString(),
-                        Toast.LENGTH_SHORT,
-                    ).show()
-                }
-
-                is ApiResponse.Failure -> {
-                    Toast.makeText(
-                        context,
-                        "${it.code} ${it.error.errors()}",
-                        Toast.LENGTH_SHORT,
-                    ).show()
-                }
-
-                else -> {}
-
-            }
-        }
-
-//        viewModel.message.collect {
-//            if (it.isNotEmpty())
-//                Toast.makeText(
-//                    context,
-//                    it,
-//                    Toast.LENGTH_SHORT,
-//                ).show()
-//        }
-    }
-
-
-    Scaffold(topBar = { EditUserProfileTopBar() }) { paddingValues ->
-        Column(
+    Scaffold(topBar = { EditUserProfileTopBar(onBackClicked = navigateBack) }) { paddingValues ->
+        Box(
             modifier = Modifier.padding(
                 top = paddingValues.calculateTopPadding(),
                 start = dimensionResource(id = R.dimen.padding_small),
@@ -85,6 +49,58 @@ fun EditUserProfileScreen(
             )
         ) {
             UserEditor(viewModel)
+            when (val saveUserResponse = viewModel.saveUserResponse.collectAsState().value) {
+                is ApiResponse.Failure -> {
+                    LaunchedEffect(Unit) {
+                        Toast.makeText(
+                            context,
+                            "${saveUserResponse.code} ${saveUserResponse.error.errors()}",
+                            Toast.LENGTH_SHORT,
+                        ).show()
+                    }
+                }
+
+                ApiResponse.Loading -> {
+                    CircularProgressIndicator(
+                        modifier = Modifier.align(Alignment.Center),
+                        color = MaterialTheme.colorScheme.secondary,
+                        trackColor = MaterialTheme.colorScheme.surfaceVariant,
+                    )
+                }
+
+                is ApiResponse.Success -> {
+                    LaunchedEffect(Unit) {
+                        Toast.makeText(
+                            context,
+                            context.getText(R.string.user_saved).toString(),
+                            Toast.LENGTH_SHORT,
+                        ).show()
+                        navigateBack()
+                    }
+                }
+                null -> {}
+            }
+            when (val userResponse = viewModel.userResponse.collectAsState().value) {
+                is ApiResponse.Failure -> {
+                    LaunchedEffect(Unit) {
+                        Toast.makeText(
+                            context,
+                            "${userResponse.code} ${userResponse.error.errors()}",
+                            Toast.LENGTH_SHORT,
+                        ).show()
+                    }
+                }
+
+                ApiResponse.Loading -> {
+                    CircularProgressIndicator(
+                        modifier = Modifier.align(Alignment.Center),
+                        color = MaterialTheme.colorScheme.secondary,
+                        trackColor = MaterialTheme.colorScheme.surfaceVariant,
+                    )
+                }
+
+                else -> {}
+            }
         }
     }
 }
@@ -92,7 +108,6 @@ fun EditUserProfileScreen(
 @Composable
 fun UserEditor(viewModel: UserEditViewModel) {
     Column(modifier = Modifier.fillMaxWidth()) {
-
         ImageLoader(
             onImagedSelected = { viewModel.onImagedSelected(it) },
             avatar = viewModel.avatar.collectAsState().value,
@@ -182,11 +197,12 @@ private fun MyTextField(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun EditUserProfileTopBar(
-    modifier: Modifier = Modifier,
+    onBackClicked: () -> Unit
 ) {
     TopAppBar(
+        navigationIcon = { BackButton(onBackClicked = onBackClicked) },
         title = {
             Text(stringResource(id = R.string.edit_profile))
-        }, modifier = modifier.statusBarsPadding()
+        }, modifier = Modifier.statusBarsPadding()
     )
 }

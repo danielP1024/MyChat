@@ -14,5 +14,4 @@ interface UserApiService {
 
     @PUT("users/me/")
     suspend fun saveUser(@Body userRequest: UserRequest): Response<ProfileData>
-
 }

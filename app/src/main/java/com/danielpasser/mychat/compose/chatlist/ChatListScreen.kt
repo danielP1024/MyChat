@@ -7,16 +7,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material3.Button
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -27,6 +20,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.danielpasser.mychat.R
 import com.danielpasser.mychat.compose.UserMenu
@@ -90,7 +85,7 @@ private fun ChatListItem(chatMessagePreview: ChatMessagePreview, onClick: () -> 
             )
             VerticalSpacer()
             Column {
-                Text(text = chatMessagePreview.userName)
+                Text(text = chatMessagePreview.userName,fontWeight = FontWeight.Bold )
                 Text(text = chatMessagePreview.message)
             }
         }
@@ -100,37 +95,20 @@ private fun ChatListItem(chatMessagePreview: ChatMessagePreview, onClick: () -> 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChatListTopBar(
-    modifier: Modifier = Modifier, onProfileClicked: () -> Unit, onEditProfileClicked: () -> Unit,
+  onProfileClicked: () -> Unit, onEditProfileClicked: () -> Unit,
     onLogOffClicked: () -> Unit,
 ) {
     TopAppBar(
-
         title = {
-
             Text(stringResource(id = R.string.chat))
 
-        }, modifier = modifier.statusBarsPadding(),
+        }, modifier = Modifier.statusBarsPadding(),
         actions = {
             UserMenu(
                 onProfileClicked = onProfileClicked,
                 onEditProfileClicked = onEditProfileClicked,
                 onLogOffClicked = onLogOffClicked
             )
-//            var expanded by rememberSaveable {
-//                mutableStateOf(false)
-//            }
-//            IconButton(onClick = { expanded = !expanded }) {
-//                Icon(
-//                    imageVector = Icons.Default.MoreVert,
-//                    contentDescription = stringResource(id = R.string.edit_profile)
-//                )
-//                DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
-//                    DropdownMenuItem(
-//                        text = { Text(text = stringResource(id = R.string.profile)) },
-//                        onClick = onProfileClicked
-//                    )
-//                }
-//            }
         }
     )
 }

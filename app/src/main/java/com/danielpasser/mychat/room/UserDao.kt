@@ -17,5 +17,5 @@ interface UserDao {
     fun deleteAll()
 
     @Upsert
-    suspend fun insert(user:UserEntity)
+    suspend fun insert(user: UserEntity)
 }

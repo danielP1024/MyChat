@@ -9,13 +9,11 @@ import androidx.compose.ui.res.dimensionResource
 import com.danielpasser.mychat.R
 
 @Composable
-fun VerticalSpacer()
-{
+fun VerticalSpacer() {
     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.padding_small)))
 }
 
 @Composable
-fun HorizontalSpacer()
-{
+fun HorizontalSpacer() {
     Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.padding_small)))
 }

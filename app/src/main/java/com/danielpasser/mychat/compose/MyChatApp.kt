@@ -42,13 +42,11 @@ object ChatList
 fun MyChatApp(viewModel: MyChatAppViewModel = hiltViewModel()) {
     val isLogin = viewModel.isLogin.collectAsState().value
     val navController = rememberNavController()
-    MyChatNavController(navController, isLogin, onLogoff = { viewModel.logOff() })
-
-
+    MyChatNavController(navController, isLogin, onLogOffClicked = { viewModel.logOff() })
 }
 
 @Composable
-fun MyChatNavController(navController: NavHostController, isLogin: Boolean, onLogoff: () -> Unit) {
+fun MyChatNavController(navController: NavHostController, isLogin: Boolean, onLogOffClicked: () -> Unit) {
     NavHost(navController = navController, startDestination = if (isLogin) ChatList else Login)
     {
         composable<Chat>
@@ -57,10 +55,10 @@ fun MyChatNavController(navController: NavHostController, isLogin: Boolean, onLo
             val chat: Chat = navBackStackEntry.toRoute()
             ChatScreen(
                 onProfileClicked = { navController.navigate(UserProfile) },
-                onLogOffClicked = onLogoff,
+                onLogOffClicked = onLogOffClicked,
                 onEditProfileClicked = { navController.navigate(UserEditor) },
                 userName = chat.userName,
-                onBackClicked = {navController.popBackStack()}
+                onBackClicked = { navController.popBackStack() }
             )
         }
         composable<ChatList>
@@ -69,7 +67,7 @@ fun MyChatNavController(navController: NavHostController, isLogin: Boolean, onLo
                 onProfileClicked = { navController.navigate(UserProfile) },
                 onMessageClicked = { navController.navigate(route = Chat(it)) },
                 onEditProfileClicked = { navController.navigate(UserEditor) },
-                onLogOffClicked = onLogoff,
+                onLogOffClicked = onLogOffClicked,
             )
         }
 
@@ -82,17 +80,17 @@ fun MyChatNavController(navController: NavHostController, isLogin: Boolean, onLo
 
         composable<UserProfile>
         {
-            UserProfileScreen(onEditProfileClicked = { navController.navigate(UserEditor) },onBackClicked = {navController.popBackStack()})
+            UserProfileScreen(
+                onEditProfileClicked = { navController.navigate(UserEditor) },
+                onBackClicked = { navController.popBackStack() },
+                onLogOffClicked = onLogOffClicked
+            )
         }
         composable<Login>
         {
             LoginScreen(onRegisterNewUserClicked = {
                 navController.navigate(route = it)
-
             }
-//                , onLogin = {
-//              //  navController.navigate(Chat)
-//            }
             )
         }
         composable<Registration>(
@@ -105,7 +103,6 @@ fun MyChatNavController(navController: NavHostController, isLogin: Boolean, onLo
         ) { navBackStackEntry ->
             val registration: Registration = navBackStackEntry.toRoute()
             RegisterScreen(reg = registration)
-            //onRegister = { navController.navigate(Chat) })
         }
     }
 }

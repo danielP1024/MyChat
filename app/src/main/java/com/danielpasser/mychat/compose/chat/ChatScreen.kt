@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.CardDefaults
@@ -28,7 +27,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.em
@@ -50,7 +48,7 @@ fun ChatScreen(
     onEditProfileClicked: () -> Unit,
     onLogOffClicked: () -> Unit,
     userName: String,
-    onBackClicked:()->Unit,
+    onBackClicked: () -> Unit,
 ) {
     Scaffold(
         topBar = {
@@ -63,7 +61,7 @@ fun ChatScreen(
             )
         },
         bottomBar = { ChatBottomBar() }) { paddingValues ->
-        Column(
+        LazyColumn(
             modifier = Modifier
                 .padding(
                     top = paddingValues.calculateTopPadding(),
@@ -73,27 +71,22 @@ fun ChatScreen(
                 )
                 .fillMaxWidth()
         ) {
-
-
-            LazyColumn(modifier = Modifier.fillMaxWidth()) {
-                items(items = viewModel.messageList) { message ->
-                    val isCurrentUser = message.userId == viewModel.myUserId
-                    val padding =
-                        if (isCurrentUser) PaddingValues(start = dimensionResource(id = R.dimen.padding_extra_large)) else PaddingValues(
-                            end = dimensionResource(id = R.dimen.padding_extra_large)
-                        )
-
-                    val align = if (isCurrentUser) Alignment.End else Alignment.Start
-                    Column(modifier = Modifier.fillMaxWidth()) {
-                        ChatItem(
-                            message = message,
-                            isCurrentUser = isCurrentUser,
-                            modifier = Modifier
-                                .align(align)
-                                .padding(padding)
-                        )
-                        VerticalSpacer()
-                    }
+            items(items = viewModel.messageList) { message ->
+                val isCurrentUser = message.userId == viewModel.myUserId
+                val padding =
+                    if (isCurrentUser) PaddingValues(start = dimensionResource(id = R.dimen.padding_extra_large)) else PaddingValues(
+                        end = dimensionResource(id = R.dimen.padding_extra_large)
+                    )
+                val align = if (isCurrentUser) Alignment.End else Alignment.Start
+                Column(modifier = Modifier.fillMaxWidth()) {
+                    ChatItem(
+                        message = message,
+                        isCurrentUser = isCurrentUser,
+                        modifier = Modifier
+                            .align(align)
+                            .padding(padding)
+                    )
+                    VerticalSpacer()
                 }
             }
         }
@@ -102,7 +95,6 @@ fun ChatScreen(
 
 @Composable
 private fun ChatItem(message: ChatMessage, modifier: Modifier, isCurrentUser: Boolean) {
-
     val colors = if (isCurrentUser) CardDefaults.elevatedCardColors(
         containerColor = Color.Green
     ) else CardDefaults.elevatedCardColors()
@@ -122,7 +114,6 @@ private fun ChatItem(message: ChatMessage, modifier: Modifier, isCurrentUser: Bo
                 )
             }
         }
-
     }
 }
 
@@ -130,11 +121,10 @@ private fun ChatItem(message: ChatMessage, modifier: Modifier, isCurrentUser: Bo
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ChatTopBar(
-    modifier: Modifier = Modifier,
     onProfileClicked: () -> Unit,
     onEditProfileClicked: () -> Unit,
     onLogOffClicked: () -> Unit,
-    onBackClicked:()->Unit,
+    onBackClicked: () -> Unit,
     userName: String,
 ) {
     TopAppBar(
@@ -150,43 +140,13 @@ private fun ChatTopBar(
                 HorizontalSpacer()
                 Text(userName)
             }
-        }, modifier = modifier.statusBarsPadding(),
+        }, modifier = Modifier.statusBarsPadding(),
         actions = {
-            UserMenu(onProfileClicked = onProfileClicked, onEditProfileClicked = onEditProfileClicked,onLogOffClicked=onLogOffClicked)
-
-
-//            var expanded by rememberSaveable {
-//                mutableStateOf(false)
-//            }
-//            IconButton(onClick = { expanded = !expanded }) {
-//                Icon(
-//                    imageVector = Icons.Default.MoreVert,
-//                    contentDescription = stringResource(id = R.string.edit_profile)
-//                )
-//                DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
-//                    DropdownMenuItem(
-//                        text = { Text(text = stringResource(id = R.string.profile)) },
-//                        onClick = {
-//                            expanded = false
-//                            onProfileClicked()
-//                        }
-//                    )
-//                    DropdownMenuItem(
-//                        text = { Text(text = stringResource(id = R.string.edit_profile)) },
-//                        onClick = {
-//                            expanded = false
-//                            onEditProfileClicked()
-//                        }
-//                    )
-//                    DropdownMenuItem(
-//                        text = { Text(text = stringResource(id = R.string.log_off)) },
-//                        onClick = {
-//                            expanded = false
-//                            onLogOffClicked()
-//                        }
-//                    )
-//                }
-//            }
+            UserMenu(
+                onProfileClicked = onProfileClicked,
+                onEditProfileClicked = onEditProfileClicked,
+                onLogOffClicked = onLogOffClicked
+            )
         }
     )
 }
@@ -194,9 +154,8 @@ private fun ChatTopBar(
 
 @Composable
 private fun ChatBottomBar(
-    modifier: Modifier = Modifier,
 ) {
-    BottomAppBar()
+    BottomAppBar(modifier = Modifier.statusBarsPadding())
     {
         OutlinedTextField(modifier = Modifier.fillMaxWidth(),
             colors = OutlinedTextFieldDefaults.colors(

@@ -2,7 +2,7 @@ package com.danielpasser.mychat.di
 
 import android.content.Context
 import com.danielpasser.mychat.network.AuthApiService
-import com.danielpasser.mychat.network.AuthAuthenticator1
+import com.danielpasser.mychat.network.AuthAuthenticator
 import com.danielpasser.mychat.network.AuthInterceptor
 import com.danielpasser.mychat.network.UserApiService
 import com.danielpasser.mychat.repositories.TokenRepository
@@ -53,7 +53,7 @@ class HiltModule {
     @Provides
     fun provideOkHttpClient(
         authInterceptor: AuthInterceptor,
-        authAuthenticator: AuthAuthenticator1,
+        authAuthenticator: AuthAuthenticator,
     ): OkHttpClient {
         val loggingInterceptor = HttpLoggingInterceptor()
         loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
@@ -75,7 +75,6 @@ class HiltModule {
     fun providePlantDao(appDatabase: AppDatabase): UserDao {
         return appDatabase.userDao()
     }
-
 
 
     @Singleton

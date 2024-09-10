@@ -82,18 +82,16 @@ class LoginViewModel @Inject constructor(
         viewModelScope.launch {
             authRepository.checkAuthCode(CheckAuthCodeRequest(phone = fullNumber(), code = smsCode))
                 .collect { authInfoResponse ->
+                    _checkAuthCode.value = authInfoResponse
                     when (authInfoResponse) {
                         is ApiResponse.Success -> {
                             clearAlertDialog()
                             onCheckAuthCodeSuccess(authInfoResponse.data)
                         }
 
-                        is ApiResponse.Failure -> {
-                            Log.e("TEST", authInfoResponse.toString())
-                        }
-
-                        else -> _checkAuthCode.value = authInfoResponse
+                        else -> {}
                     }
+
                 }
         }
     }

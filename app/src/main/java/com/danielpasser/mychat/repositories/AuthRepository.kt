@@ -19,5 +19,4 @@ class AuthRepository @Inject constructor(
 
     fun register(registerRequest: RegisterRequest) =
         apiRequestFlow { authApiService.register(registerRequest = registerRequest) }
-
 }

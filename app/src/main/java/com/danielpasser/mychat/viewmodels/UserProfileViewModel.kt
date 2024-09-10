@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.danielpasser.mychat.models.networkmodels.response.ProfileData
 import com.danielpasser.mychat.models.networkmodels.response.UserResponse
-import com.danielpasser.mychat.repositories.TokenRepository
 import com.danielpasser.mychat.repositories.UserRepository
 import com.danielpasser.mychat.utils.ApiResponse
 import com.danielpasser.mychat.utils.TIMEOUT_MILLIS
@@ -25,7 +24,7 @@ class UserProfileViewModel @Inject constructor(
     private val _userResponse: MutableStateFlow<ApiResponse<UserResponse>?> =
         MutableStateFlow(null)
     val userResponse: StateFlow<ApiResponse<UserResponse>?> = _userResponse
-    val user: StateFlow<ProfileData?> = userRepository.userDB().stateIn(
+    val userDB: StateFlow<ProfileData?> = userRepository.userDB().stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(TIMEOUT_MILLIS),
         initialValue = null

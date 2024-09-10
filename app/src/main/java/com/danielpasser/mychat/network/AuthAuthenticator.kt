@@ -33,27 +33,32 @@ class AuthAuthenticator @Inject constructor(
             val refreshToken = runBlocking {
                 tokenRepository.getRefreshToken().first()
             }
-            val newToken = getNewToken(refreshToken)
-            if (!newToken.isSuccessful || newToken.body() == null) { //Couldn't refresh the token, so restart the login process
-                val deleteJobs = listOf(
-                    launch { tokenRepository.deleteRefreshToken() },
-                    launch { tokenRepository.deleteAccessToken() },
-                )
-                deleteJobs.joinAll()
-                request = null
-            }
-            newToken.body()?.let {
-                accessToken = it.accessToken
-                val saveJobs = listOf(
-                    launch { tokenRepository.saveAccessToken(it.accessToken) },
-                    launch { tokenRepository.saveRefreshToken(it.refreshToken) },
-                )
-                saveJobs.joinAll()
-                request = buildRequest(response.request.newBuilder())
+            request = null
+            if (!tokenRefreshInProgress.get()) {
+                tokenRefreshInProgress.set(true)
+                val newToken = getNewToken(refreshToken)
+                if (!newToken.isSuccessful || newToken.body() == null) { //Couldn't refresh the token, so restart the login process
+                    val deleteJobs = listOf(
+                        launch { tokenRepository.deleteRefreshToken() },
+                        launch { tokenRepository.deleteAccessToken() },
+                    )
+                    deleteJobs.joinAll()
+                    request = null
+                }
+                newToken.body()?.let {
+                    accessToken = it.accessToken
+                    val saveJobs = listOf(
+                        launch { tokenRepository.saveAccessToken(it.accessToken) },
+                        launch { tokenRepository.saveRefreshToken(it.refreshToken) },
+                    )
+                    saveJobs.joinAll()
+                    request = buildRequest(response.request.newBuilder())
 
+                }
+                tokenRefreshInProgress.set(false)
+            } else {
+                waitForRefresh(response)
             }
-            tokenRefreshInProgress.set(false)
-
             return@runBlocking request
         }
     }

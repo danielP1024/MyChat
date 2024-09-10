@@ -29,7 +29,7 @@ class UserRepository @Inject constructor(
     fun saveUser(userRequest: UserRequest) =
         apiRequestFlow { userApiService.saveUser(userRequest = userRequest) }.map { response ->
             if (response is ApiResponse.Success) {
-             getUser().collect{ }
+          //   getUser().collect{ }
             }
             return@map response
         }

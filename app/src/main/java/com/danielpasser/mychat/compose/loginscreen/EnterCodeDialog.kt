@@ -33,25 +33,8 @@ fun EnterCodeDialog(
     var isError by remember { mutableStateOf(false) }
 
 
-    when (checkAuthCode) {
-        is ApiResponse.Failure -> {
-            if (checkAuthCode.code == 404) isError = true
-            else ShowToastCompose(response = checkAuthCode)
-        }
-
-        is ApiResponse.Loading -> {}
-        else -> {}
-    }
 
     Box(Modifier.wrapContentSize()) {
-        if (checkAuthCode is ApiResponse.Loading) {
-            CircularProgressIndicator(
-                modifier = Modifier.align(Alignment.Center),
-                color = MaterialTheme.colorScheme.secondary,
-                trackColor = MaterialTheme.colorScheme.surfaceVariant,
-            )
-        }
-
         AlertDialog(
             title = {
                 Text(text = stringResource(id = R.string.enter_sms))
@@ -107,5 +90,22 @@ fun EnterCodeDialog(
                 }
             }
         )
+        when (checkAuthCode) {
+            is ApiResponse.Failure -> {
+                if (checkAuthCode.code == 404) isError = true
+                else ShowToastCompose(response = checkAuthCode)
+            }
+
+            is ApiResponse.Loading -> {
+                CircularProgressIndicator(
+                    modifier = Modifier.align(Alignment.Center),
+                    color = MaterialTheme.colorScheme.secondary,
+                    trackColor = MaterialTheme.colorScheme.surfaceVariant,
+                )
+            }
+
+            else -> {}
+        }
     }
+
 }

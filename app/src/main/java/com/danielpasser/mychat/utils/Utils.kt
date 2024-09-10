@@ -40,11 +40,7 @@ class Utils {
             val json = readJsonFromAssets(context = context, fileName = "country_codes.json")
             val gson = Gson()
             return gson.fromJson(json, Array<Country>::class.java).asList()
-
         }
-
-        fun getCountryInfo(country: Country) =
-            "${country.dialCode} ${getEmojiFlag(country.isoCode)} ${country.name}"
 
         fun getCountryInfoShort(country: Country) =
             "${country.dialCode} ${getEmojiFlag(country.isoCode)}"
@@ -55,11 +51,6 @@ class Utils {
                 ?.joinToString("") {
                     String(Character.toChars(it))
                 } ?: ""
-        }
-
-        fun getCountryName(isoString: String): String {
-            val locale = Locale("", isoString)
-            return locale.displayCountry
         }
 
         fun searchCountry(query: String, list: List<Country>): List<Country> {
@@ -74,61 +65,6 @@ class Utils {
 
         fun String.usernameCheck(): Boolean =
             this.matches("[A-Za-z0-9_-]+".toRegex()) || this.isEmpty()
-
-        fun imgToByteArray(uri: Uri): String {
-            try {
-                Log.e("TEST", uri.path.toString())
-                val bm = BitmapFactory.decodeFile(uri.toString())
-                val baos = ByteArrayOutputStream()
-                bm.compress(Bitmap.CompressFormat.JPEG, 100, baos) // bm is the bitmap object
-                return baos.toByteArray().toString()
-
-            } catch (e: Exception) {
-                return ""
-                Log.e("TEST", e.toString())
-            }
-        }
-
-
-//        fun bitmapToByteArray(bitmap: ImageBitmap): String? {
-//            val outputStream = ByteArrayOutputStream()
-//            bitmap
-//                .compress(Bitmap.CompressFormat.PNG, 100, outputStream)
-//            return Base64.encodeToString(outputStream.toByteArray(),Base64.DEFAULT)
-//        }
-
-        fun convertImageFileToBase64(imageFile: File): String {
-
-            return FileInputStream(imageFile).use { inputStream ->
-                ByteArrayOutputStream().use { outputStream ->
-                    Base64OutputStream(outputStream, Base64.DEFAULT).use { base64FilterStream ->
-                        inputStream.copyTo(base64FilterStream)
-                        base64FilterStream.close()
-                        outputStream.toString()
-                    }
-                }
-            }
-        }
-
-
-        fun uriToBitmap(context: Context, uri: Uri): Bitmap? {
-            // Obtain the content resolver from the context
-            val contentResolver: ContentResolver = context.contentResolver
-
-            // Check the API level to use the appropriate method for decoding the Bitmap
-            return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                // For Android P (API level 28) and higher, use ImageDecoder to decode the Bitmap
-                val source = ImageDecoder.createSource(contentResolver, uri)
-                ImageDecoder.decodeBitmap(source)
-            } else {
-                // For versions prior to Android P, use BitmapFactory to decode the Bitmap
-                val bitmap = context.contentResolver.openInputStream(uri)?.use { stream ->
-                    Bitmap.createBitmap(BitmapFactory.decodeStream(stream))
-                }
-                bitmap
-            }
-        }
-
 
         fun Bitmap.toBase64str(): String {
             val outputStream = ByteArrayOutputStream()
@@ -148,29 +84,6 @@ class Utils {
             } catch (e: Exception) {
                 null
             }
-        }
-
-        fun convert(base64Str: String): Bitmap? {
-            return try {
-                val decodedBytes = Base64.decode(
-                    base64Str.substring(base64Str.indexOf(",") + 1),
-                    Base64.DEFAULT
-                )
-                BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.size)
-            } catch (e: Exception) {
-                null
-            }
-        }
-
-        fun Uri.getName(context: Context): String? {
-            val returnCursor = context.contentResolver.query(this, null, null, null, null)
-            val nameIndex = returnCursor?.getColumnIndex(OpenableColumns.DISPLAY_NAME)
-            returnCursor?.moveToFirst()
-            if (nameIndex != null) {
-                val fileName = returnCursor.getString(nameIndex)
-                returnCursor.close()
-                return fileName
-            } else return null
         }
 
         fun Uri.toBitmap(context: Context): Bitmap? {
@@ -210,34 +123,17 @@ class Utils {
             }
         }
 
-
         fun String.fullDate(): String? {
             try {
-
                 val dateString = this
                 val formatter = DateTimeFormatter.ISO_DATE_TIME
                 val zonedDateTime = ZonedDateTime.parse(dateString, formatter)
                 val dateTimeFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss")
-
                 return zonedDateTime.format(dateTimeFormatter)
             } catch (e: Exception) {
                 return null
             }
         }
-
-
-        fun String.fullDateToTime(): String? {
-            val dateString = this
-            val formatter = DateTimeFormatter.ISO_DATE_TIME
-            val zonedDateTime = ZonedDateTime.parse(dateString, formatter)
-            val time = zonedDateTime.toLocalTime()
-            //  val timeFormatter = DateTimeFormatter.ofPattern("HH:mm")
-            val timeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
-
-            return time.format(timeFormatter)
-
-        }
-
 
         fun String.dateToZodiac(): String? {
             try {
@@ -260,26 +156,10 @@ class Utils {
                 signs[1023] = "Scorpio"
                 signs[1122] = "Sagittarius"
                 signs[1222] = "Capricorn"
-                val key = month*100 + day
+                val key = month * 100 + day
                 return signs.floorEntry(key)!!.value
             } catch (e: Exception) {
                 return null
-            }
-
-        }
-
-
-        fun String.convertDateFull(): Calendar? {
-            return try {
-                val cal = Calendar.getInstance()
-                val dateString = this
-                val formatter = DateTimeFormatter.ISO_DATE_TIME
-                val zonedDateTime = ZonedDateTime.parse(dateString, formatter)
-                //SimpleDateFormat(simpleDateFormatPatternFull, Locale.getDefault())
-                cal.time = Date.from(zonedDateTime.toInstant())
-                cal
-            } catch (e: Exception) {
-                null
             }
         }
     }

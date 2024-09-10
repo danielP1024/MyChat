@@ -9,6 +9,6 @@ data class Avatar(
     var bitmap: Bitmap? = null
 )
 
-
-    fun Avatar.toAvatarRequest():AvatarRequest = AvatarRequest(fileName=fileName,base64 = bitmap?.toBase64str())
+fun Avatar.toAvatarRequest(): AvatarRequest =
+    AvatarRequest(fileName = fileName, base64 = bitmap?.toBase64str())
 

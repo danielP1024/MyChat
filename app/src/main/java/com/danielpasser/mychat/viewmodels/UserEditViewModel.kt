@@ -4,7 +4,6 @@ import android.app.Application
 import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.viewModelScope
-import com.danielpasser.mychat.R
 import com.danielpasser.mychat.models.Avatar
 import com.danielpasser.mychat.models.networkmodels.request.UserRequest
 import com.danielpasser.mychat.models.networkmodels.response.ProfileData
@@ -149,6 +148,7 @@ class UserEditViewModel @Inject constructor(
     fun saveUser() {
         viewModelScope.launch {
             userRepository.saveUser(setUser()).collect {
+                if (it is ApiResponse.Success) getUser()
                 _saveUserResponse.value = it
             }
         }

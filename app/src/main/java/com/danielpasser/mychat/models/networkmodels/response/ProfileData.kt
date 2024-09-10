@@ -4,7 +4,6 @@ import com.danielpasser.mychat.models.room.UserEntity
 import com.google.gson.annotations.SerializedName
 
 data class ProfileData(
-
     @SerializedName("name") var name: String? = null,
     @SerializedName("username") var username: String? = null,
     @SerializedName("birthday") var birthday: String? = null,
@@ -20,7 +19,6 @@ data class ProfileData(
     @SerializedName("phone") var phone: String? = null,
     @SerializedName("completed_task") var completedTask: Int? = null,
     @SerializedName("avatars") var avatars: AvatarResponse? = AvatarResponse()
-
 )
 
 fun ProfileData.toUserEntity() = UserEntity(

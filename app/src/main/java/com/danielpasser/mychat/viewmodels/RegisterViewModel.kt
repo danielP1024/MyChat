@@ -27,10 +27,6 @@ class RegisterViewModel @Inject constructor(
     private val _selectedCountry: MutableStateFlow<Country> = MutableStateFlow(Country())
     val selectedCountry: StateFlow<Country> = _selectedCountry
 
-    private val _isUserNameCorrect: MutableStateFlow<Boolean> = MutableStateFlow(true)
-    val isUserNameCorrect: StateFlow<Boolean> = _isUserNameCorrect
-
-
     private val _name: MutableStateFlow<String> = MutableStateFlow("")
     val name: StateFlow<String> = _name
 
@@ -40,10 +36,6 @@ class RegisterViewModel @Inject constructor(
     private val _register: MutableStateFlow<ApiResponse<AuthInfoResponse>?> =
         MutableStateFlow(null)
     val register: StateFlow<ApiResponse<AuthInfoResponse>?> = _register
-
-    fun resetRegister() {
-        _register.value = null
-    }
 
     fun onUsernameChanged(str: String) {
         if (str.usernameCheck())
@@ -55,21 +47,14 @@ class RegisterViewModel @Inject constructor(
     }
 
     private fun fullNumber() = _selectedCountry.value.dialCode + _phoneNumber.value
-    private fun checkIfUsernameCorrect() {
-
-    }
 
     fun register() {
         viewModelScope.launch {
             val registerRequest =
                 RegisterRequest(fullNumber(), username = userName.value, name = name.value)
             authRepository.register(registerRequest).collect {
+                _register.value = it
                 when (it) {
-                    is ApiResponse.Failure -> {
-                        Log.e("TEST", it.toString())
-                    }
-
-                    ApiResponse.Loading -> {}
                     is ApiResponse.Success -> {
                         launch {
                             saveAllTokens(
@@ -77,8 +62,9 @@ class RegisterViewModel @Inject constructor(
                                 accessToken = it.data.accessToken
                             )
                         }.join()
-                        _register.value = it
                     }
+
+                    else -> {}
                 }
             }
         }

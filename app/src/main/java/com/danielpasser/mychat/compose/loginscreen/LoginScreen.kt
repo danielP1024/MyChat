@@ -31,35 +31,20 @@ import com.danielpasser.mychat.viewmodels.LoginViewModel
 fun LoginScreen(
     viewModel: LoginViewModel = hiltViewModel(),
     onRegisterNewUserClicked: (Registration) -> Unit,
-//    onLogin: () -> Unit
 ) {
-
-    val sendAuthCode = viewModel.sendAuthCode.collectAsState().value
-
-    ShowToastCompose(sendAuthCode)
-
-//    LaunchedEffect(Unit) {
-//        viewModel.isLogin.collect { if (it) onLogin() }
-//    }
     Scaffold(topBar = { LoginTopBar() }) { paddingValues ->
-        Box(Modifier.fillMaxSize()) {
-            if (sendAuthCode is ApiResponse.Loading) {
-                CircularProgressIndicator(
-                    modifier = Modifier.align(Alignment.Center),
-                    color = MaterialTheme.colorScheme.secondary,
-                    trackColor = MaterialTheme.colorScheme.surfaceVariant,
-                )
-            }
-            Column(
-                modifier = Modifier.padding(
+        Box(
+            modifier = Modifier
+                .padding(
                     top = paddingValues.calculateTopPadding(),
                     start = dimensionResource(id = R.dimen.padding_small),
                     end = dimensionResource(id = R.dimen.padding_small),
                     bottom = dimensionResource(id = R.dimen.padding_small)
                 )
-            ) {
-                //val sendAuthCode = viewModel.sendAuthCode.collectAsState().value
+                .fillMaxSize()
+        ) {
 
+            Column {
                 if (viewModel.showUserNotRegDialog.collectAsState().value == true) {
                     UserNotRegDialog(
                         onDismissRequest = { viewModel.dismissUserNotRegDialog() },
@@ -68,13 +53,7 @@ fun LoginScreen(
                             onRegisterNewUserClicked(viewModel.registerNewUserInfo())
                         })
                 }
-                if (sendAuthCode is ApiResponse.Success) {
-                    EnterCodeDialog(
-                        onDismissRequest = { viewModel.clearAlertDialog() },
-                        onConfirmation = { viewModel.onSmsCodeReceived(it) },
-                        checkAuthCode = viewModel.checkAuthCode.collectAsState().value
-                    )
-                }
+
                 PhonePicker(
                     phoneNumber = viewModel.phoneNumber.collectAsState().value,
                     onValueChanged = { viewModel.onPhoneNumberChanged(it) },
@@ -88,6 +67,29 @@ fun LoginScreen(
                 }) {
                     Text(text = stringResource(id = R.string.login))
                 }
+            }
+            when (val sendAuthCode = viewModel.sendAuthCode.collectAsState().value) {
+                is ApiResponse.Failure -> {
+                    ShowToastCompose(response = sendAuthCode)
+                }
+
+                ApiResponse.Loading -> {
+                    CircularProgressIndicator(
+                        modifier = Modifier.align(Alignment.Center),
+                        color = MaterialTheme.colorScheme.secondary,
+                        trackColor = MaterialTheme.colorScheme.surfaceVariant,
+                    )
+                }
+
+                is ApiResponse.Success -> {
+                    EnterCodeDialog(
+                        onDismissRequest = { viewModel.clearAlertDialog() },
+                        onConfirmation = { viewModel.onSmsCodeReceived(it) },
+                        checkAuthCode = viewModel.checkAuthCode.collectAsState().value
+                    )
+                }
+
+                null -> {}
             }
         }
     }

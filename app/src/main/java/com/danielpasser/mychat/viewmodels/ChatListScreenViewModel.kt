@@ -25,8 +25,8 @@ class ChatListScreenViewModel @Inject constructor(
         ),
 
         ChatMessagePreview(
-            message = "Batman",
-            userName = "I am Batman",
+            message = "I am Batman",
+            userName = "Batman",
         ),
     )
 }

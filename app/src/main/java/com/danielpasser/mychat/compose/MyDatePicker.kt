@@ -25,7 +25,7 @@ import com.danielpasser.mychat.utils.Utils.Companion.convertMillisToDate
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MyDatePicker(
-    label:String,
+    label: String,
     timeInMillis: Long?,
     onDateSelected: (Long?) -> Unit,
 ) {
@@ -51,7 +51,7 @@ fun MyDatePicker(
 
     if (showDatePicker)
         DatePickerDialog(
-            onDismissRequest = {showDatePicker=false},
+            onDismissRequest = { showDatePicker = false },
             confirmButton = {
                 TextButton(onClick = {
                     onDateSelected(datePickerState.selectedDateMillis)

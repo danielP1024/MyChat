@@ -14,8 +14,6 @@ import retrofit2.Response
 fun <T> apiRequestFlow(call: suspend () -> Response<T>): Flow<ApiResponse<T>> = flow {
     emit(ApiResponse.Loading)
     try {
-
-
         withTimeoutOrNull(20000L) {
             val response = call()
             try {
@@ -31,12 +29,10 @@ fun <T> apiRequestFlow(call: suspend () -> Response<T>): Flow<ApiResponse<T>> = 
                         try {
                             val parsedError: ErrorResponse =
                                 Gson().fromJson(text, ErrorResponse::class.java)
-
+                            Log.e("TEST", parsedError.toString())
                             emit(ApiResponse.Failure(error = parsedError, code = response.code()))
                         } catch (e: Exception) {
                             Log.e("TEST", e.toString())
-//there are several models for error response in API.
-                            //I will improve it later if i have enough time
                             emit(
                                 ApiResponse.Failure(
                                     ErrorResponse(
