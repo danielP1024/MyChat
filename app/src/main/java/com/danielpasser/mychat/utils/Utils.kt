@@ -8,15 +8,10 @@ import android.graphics.BitmapFactory
 import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Build
-import android.provider.OpenableColumns
 import android.util.Base64
-import android.util.Base64OutputStream
-import android.util.Log
 import com.danielpasser.mychat.models.Country
 import com.google.gson.Gson
 import java.io.ByteArrayOutputStream
-import java.io.File
-import java.io.FileInputStream
 import java.text.SimpleDateFormat
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
@@ -70,20 +65,6 @@ class Utils {
             val outputStream = ByteArrayOutputStream()
             this.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
             return Base64.encodeToString(outputStream.toByteArray(), Base64.DEFAULT)
-        }
-
-
-        fun String.toBitmap(): Bitmap? {
-            val base64Str = this
-            return try {
-                val decodedBytes = Base64.decode(
-                    base64Str.substring(base64Str.indexOf(",") + 1),
-                    Base64.DEFAULT
-                )
-                BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.size)
-            } catch (e: Exception) {
-                null
-            }
         }
 
         fun Uri.toBitmap(context: Context): Bitmap? {

@@ -25,7 +25,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class UserEditViewModel @Inject constructor(
-    private val tokenRepository: TokenRepository,
+    tokenRepository: TokenRepository,
     private val application: Application,
     private val userRepository: UserRepository
 ) : BaseTokenViewModel(tokenRepository) {
@@ -38,12 +38,6 @@ class UserEditViewModel @Inject constructor(
     private val _saveUserResponse: MutableStateFlow<ApiResponse<ProfileData>?> =
         MutableStateFlow(null)
     val saveUserResponse: StateFlow<ApiResponse<ProfileData>?> = _saveUserResponse
-
-
-    private val _message: MutableStateFlow<String> =
-        MutableStateFlow("")
-    val message: StateFlow<String> = _message
-
 
     private val _userName: MutableStateFlow<String> =
         MutableStateFlow("")

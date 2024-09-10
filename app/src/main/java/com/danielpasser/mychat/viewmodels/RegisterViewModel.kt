@@ -1,6 +1,5 @@
 package com.danielpasser.mychat.viewmodels
 
-import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.danielpasser.mychat.compose.Registration
 import com.danielpasser.mychat.models.Country

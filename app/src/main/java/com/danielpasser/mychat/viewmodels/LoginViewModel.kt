@@ -1,7 +1,6 @@
 package com.danielpasser.mychat.viewmodels
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.danielpasser.mychat.compose.Registration
 import com.danielpasser.mychat.models.Country
@@ -22,14 +21,10 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    private val application: Application,
+    application: Application,
     private val authRepository: AuthRepository,
     tokenRepository: TokenRepository
 ) : BaseTokenViewModel(tokenRepository) {
-
-    private val _isLogin: MutableStateFlow<Boolean> =
-        MutableStateFlow(false)
-    val isLogin: StateFlow<Boolean> = _isLogin
 
     private val _countries: MutableStateFlow<List<Country>> =
         MutableStateFlow(Utils.getCountries(application))
@@ -112,7 +107,6 @@ class LoginViewModel @Inject constructor(
                 )
             }
             job.join()
-            _isLogin.value = true
         }
     }
 

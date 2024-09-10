@@ -31,7 +31,6 @@ import com.danielpasser.mychat.compose.ImageLoader
 import com.danielpasser.mychat.models.networkmodels.response.errors
 import com.danielpasser.mychat.utils.ApiResponse
 import com.danielpasser.mychat.viewmodels.UserEditViewModel
-import kotlinx.coroutines.flow.collect
 
 @Composable
 fun EditUserProfileScreen(

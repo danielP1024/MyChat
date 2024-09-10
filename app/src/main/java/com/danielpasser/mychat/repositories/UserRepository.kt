@@ -13,8 +13,7 @@ import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class UserRepository @Inject constructor(
-    private val userApiService: UserApiService,
-    private val userDao: UserDao
+    private val userApiService: UserApiService, private val userDao: UserDao
 ) {
     fun getUser() = apiRequestFlow {
         userApiService.getUser()
@@ -27,12 +26,7 @@ class UserRepository @Inject constructor(
     }
 
     fun saveUser(userRequest: UserRequest) =
-        apiRequestFlow { userApiService.saveUser(userRequest = userRequest) }.map { response ->
-            if (response is ApiResponse.Success) {
-          //   getUser().collect{ }
-            }
-            return@map response
-        }
+        apiRequestFlow { userApiService.saveUser(userRequest = userRequest) }
 
     private suspend fun saveUserDB(user: ProfileData?) {
 
@@ -43,7 +37,6 @@ class UserRepository @Inject constructor(
 
     fun userDB() = userDao.getUsers().map {
         if (it.isEmpty()) null
-        else
-            it.first().toProfiled()
+        else it.first().toProfiled()
     }
 }

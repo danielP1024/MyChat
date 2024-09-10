@@ -25,7 +25,6 @@ import com.danielpasser.mychat.R
 import com.danielpasser.mychat.compose.Registration
 import com.danielpasser.mychat.compose.ShowToastCompose
 import com.danielpasser.mychat.compose.VerticalSpacer
-import com.danielpasser.mychat.compose.loginscreen.EnterCodeDialog
 import com.danielpasser.mychat.compose.phonepicker.PhonePicker
 import com.danielpasser.mychat.utils.ApiResponse
 import com.danielpasser.mychat.viewmodels.RegisterViewModel

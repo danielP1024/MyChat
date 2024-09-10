@@ -1,12 +1,8 @@
 package com.danielpasser.mychat.viewmodels
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.danielpasser.mychat.models.ChatMessage
 import com.danielpasser.mychat.models.ChatMessagePreview
-import com.danielpasser.mychat.repositories.TokenRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
